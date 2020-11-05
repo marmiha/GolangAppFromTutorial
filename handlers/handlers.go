@@ -4,10 +4,11 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"time"
+	"todo/domain"
 )
 
 type Server struct {
-
+	Domain *domain.Domain
 }
 
 func setupMiddleWare(router *chi.Mux) {
@@ -20,14 +21,21 @@ func setupMiddleWare(router *chi.Mux) {
 	router.Use(middleware.Timeout(60 * time.Second))
 }
 
-func NewServer() *Server {
-	return &Server{}
+func NewServer(domain *domain.Domain) *Server {
+	return &Server{Domain: domain}
 }
 
-func SetupRouter() *chi.Mux {
-	server := NewServer()
+// By passing the domain we have access to all of the domain functions so basically
+// all of our business logic.
+func SetupRouter(domain *domain.Domain) *chi.Mux {
+	// Pass our server the business logic struct (the domain package).
+	server := NewServer(domain)
+
+	// Make a new router and attach the middleware.
 	router := chi.NewRouter()
 	setupMiddleWare(router)
+
+	// Register our endpoints on the router.
 	server.setupEndpoints(router)
 	return router
 }

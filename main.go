@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"todo/domain"
 	"todo/handlers"
 	"todo/postgres"
 )
@@ -41,8 +42,21 @@ func main() {
 	// After the main function returns, this will be called.
 	defer DB.Close()
 
-	// Setting up the router via handlers package.
-	router := handlers.SetupRouter()
+	// This is how we inject the domain package requirements from postgres package.
+	// We have to get the connection for the database, but we have to be careful of circular dependencies
+	// for our domain and postgres package.
+	// So we have to inject the Database in our domain package. Our injection will happen in domain.DB struct,
+	// which contains Repository interfaces.
+	// Repository interfaces (database gateways) are defined inside our domain package but are implemented
+	// inside the postgres package which contains Repository struct (not an interface) containing DB pointer. Mind blown.
+	// This way only postgres package operates the DB exposing the database gateways over the
+	// defined interface of domain package.
+	domainDB := domain.DB{UserRepository: postgres.NewUserRepository(DB)}
+	// Now the domain includes everything we need for our REST endpoints.
+	domain := domain.Domain{DB: domainDB}
+
+	// Setting up the router via handlers package whilst injecting it with our domain/business logic.
+	router := handlers.SetupRouter(&domain)
 
 	// Start our Http server and register our router.
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
