@@ -51,9 +51,13 @@ func main() {
 	// inside the postgres package which contains Repository struct (not an interface) containing DB pointer. Mind blown.
 	// This way only postgres package operates the DB exposing the database gateways over the
 	// defined interface of domain package.
-	domainDB := domain.DB{UserRepository: postgres.NewUserRepository(DB)}
+	domainDB := domain.DB{
+		UserRepository: postgres.NewUserRepository(DB),
+	}
 	// Now the domain includes everything we need for our REST endpoints.
-	domain := domain.Domain{DB: domainDB}
+	domain := domain.Domain{
+		DB: domainDB,
+	}
 
 	// Setting up the router via handlers package whilst injecting it with our domain/business logic.
 	router := handlers.SetupRouter(&domain)
