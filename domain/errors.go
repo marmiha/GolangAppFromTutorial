@@ -1,11 +1,19 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+)
 
-// These will be our business logic errors that can occur. This way code is more readable and it also ensures
-// consistency of errors naming across our codebase.
+// These will be our business logic errors that can occur other than validation. This way code is more readable and it
+// also ensures consistency of errors naming across our codebase.
 var (
 	ErrUserWithEmailAlreadyExists    = errors.New("user with specified email already exists")
 	ErrUserWithUsernameAlreadyExists = errors.New("user with specified username already exist")
 	ErrNoResult                      = errors.New("no result")
+)
+
+// These errors are used for go-ozzo validation in our business logic, mostly for our payloads.
+var (
+	ErrPasswordsDoNotMatch = validation.NewError("validation_key_passwords_do_not_match", "passwords don't match")
 )

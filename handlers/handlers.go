@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"net/http"
 	"time"
 	"todo/domain"
@@ -71,4 +73,36 @@ func badRequestResponse(writer http.ResponseWriter, error error) {
 		"error": error.Error(),
 	}
 	jsonResponse(writer, response, http.StatusBadRequest)
+}
+
+// Universal payload tester for Http endpoints. Throws validation errors or decoding errors.
+func validatePayload(next http.HandlerFunc, payload validation.Validatable) http.HandlerFunc{
+	return func(writer http.ResponseWriter, request *http.Request) {
+		// We will try to decode our request.body with our RegisterPayload struct.
+		// We will save it inside the payload pointer.
+		decodingError := json.NewDecoder(request.Body).Decode(&payload)
+
+		if decodingError != nil {
+			// Call our defined handler function for Http BadRequest status code.
+			badRequestResponse(writer, decodingError)
+			return
+		}
+
+		// We close the body after this function exits.
+		defer  request.Body.Close()
+
+		// Validate the payload.
+		if validationErrors := payload.Validate(); validationErrors != nil {
+			// Bad request response.
+			badRequestResponse(writer, validationErrors)
+			return
+		}
+
+		// We will add a new filed to the context of our request.
+		// As if we would do: req.payload = payload on a objet in javascript.
+		// We can access it later.
+		newPayloadContext := context.WithValue(request.Context(), "payload", payload)
+		next.ServeHTTP(writer, request.WithContext(newPayloadContext))
+
+	}
 }

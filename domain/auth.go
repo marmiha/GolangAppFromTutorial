@@ -1,5 +1,11 @@
 package domain
 
+import (
+	"fmt"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
+)
+
 // This is the payload we will get when a user wants to register.
 // On the right hand side we have the json attribute names.
 type RegisterPayload struct {
@@ -8,6 +14,18 @@ type RegisterPayload struct {
 	ConfirmPassword string `json:"confirm_password"`
 	Username        string `json:"username"`
 }
+
+// go-ozzo validator implementation for our register payload package.
+func (rp RegisterPayload) Validate() error {
+	fmt.Printf("xxxx %v", rp)
+	return validation.ValidateStruct(&rp,
+		validation.Field(&rp.Email, validation.Required, is.Email),
+		validation.Field(&rp.Username, validation.Required, validation.Length(3, 15)),
+		validation.Field(&rp.Password, validation.Required, validation.Length(5, 50)),
+		validation.Field(&rp.ConfirmPassword, validation.Required, validation.In(rp.Password).ErrorObject(ErrPasswordsDoNotMatch)),
+	)
+}
+
 
 // Business logic for registration
 func (domain *Domain) Register(payload RegisterPayload) (*User, error) {
