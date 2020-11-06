@@ -6,12 +6,15 @@ import (
 	"todo/domain"
 )
 
-func (s *Server) registerUser() http.HandlerFunc	{
+func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request) {
 	// This is the payload that we need.
-	var payload domain.RegisterPayload
+	payload := new(domain.RegisterPayload)
 
 	// Call the validate payload.
-	return validatePayload(func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Printf("payload %v", payload)
-	}, &payload)
+	next := validatePayload(func(writer http.ResponseWriter, request *http.Request) {
+		// If successful then this will be executed.
+		fmt.Println(payload)
+	}, payload)
+
+	next.ServeHTTP(writer, request)
 }

@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
@@ -17,12 +16,11 @@ type RegisterPayload struct {
 
 // go-ozzo validator implementation for our register payload package.
 func (rp RegisterPayload) Validate() error {
-	fmt.Printf("xxxx %v", rp)
 	return validation.ValidateStruct(&rp,
-		validation.Field(&rp.Email, validation.Required, is.Email),
-		validation.Field(&rp.Username, validation.Required, validation.Length(3, 15)),
-		validation.Field(&rp.Password, validation.Required, validation.Length(5, 50)),
-		validation.Field(&rp.ConfirmPassword, validation.Required, validation.In(rp.Password).ErrorObject(ErrPasswordsDoNotMatch)),
+		validation.Field(&rp.Email, validation.Required, validation.NotNil, is.Email),
+		validation.Field(&rp.Username, validation.Required, validation.NotNil, validation.Length(3, 15)),
+		validation.Field(&rp.Password, validation.Required, validation.NotNil, validation.Length(5, 50)),
+		validation.Field(&rp.ConfirmPassword, validation.Required, validation.NotNil, validation.In(rp.Password).ErrorObject(ErrPasswordsDoNotMatch)),
 	)
 }
 

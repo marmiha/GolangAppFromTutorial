@@ -103,6 +103,5 @@ func validatePayload(next http.HandlerFunc, payload validation.Validatable) http
 		// We can access it later.
 		newPayloadContext := context.WithValue(request.Context(), "payload", payload)
 		next.ServeHTTP(writer, request.WithContext(newPayloadContext))
-
 	}
 }
