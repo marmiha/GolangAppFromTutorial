@@ -32,5 +32,3 @@ code for our CRUD operations.
 
 Contains our `REST` API endpoints implementation. These accept data over HTTP and respond accordingly to the data validation
 or business errors that occur with the right status codes and payload values.
-                                                                                 
-=======
