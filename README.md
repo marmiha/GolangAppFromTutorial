@@ -16,6 +16,8 @@ done over interfaces. I have chosen `REST` design for endpoints combined with a 
 change it for example to `GraphQL` support or a different database the code base of the business logic would
 stay the same.
 
+Each of the following packages can be found in the folder with the same name as the package.
+
 ##### `package domain` resides in _.\domain_
 Contains the business logic of the application and is used by API endpoints. This is where we defined custom 
 business logic errors and the interfaces `type <Model>Repository interface {}` where model stands for the name of the 
