@@ -6,7 +6,7 @@ for purpose of learning Go language. The tutorial playlist can be found on [this
 link. Albeit I have followed the tutorial I've tried to implement a few quirks of my own, just to experiment with the 
 yet unfamiliar programming language.
 
-#### Project structure
+### Project structure
 
 The application made of three different components - database specific logic, business logic and API endpoints
 specific configurations. Through the project our main goal is to separate our API and database choice from the business 
