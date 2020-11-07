@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -63,13 +64,22 @@ func main() {
 		DB: domainDB,
 	}
 
+	// Create our database schema with this options.
+	options := orm.CreateTableOptions{
+		Temp: true,
+	}
+	err := postgres.CreateSchema(DB, &options)
+	if err != nil {
+		log.Fatalf("Unable to create database schema:\n%v", err)
+	}
+
 	// Setting up the router via handlers package whilst injecting it with our domain/business logic.
 	router := handlers.SetupRouter(&domain)
 
 	// Start our Http server and register our router.
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", port), router)
 	if err != nil {
 		// Log if it http does not start listening and serving.
-		log.Fatalf("cannot start server %v", err)
+		log.Fatalf("Can not start server %v", err)
 	}
 }

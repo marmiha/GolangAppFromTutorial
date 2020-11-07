@@ -42,6 +42,7 @@ func (domain *Domain) Register(payload RegisterPayload) (*User, error) {
 	}
 
 	// Getting the password.
+
 	passwordHash, passwordError := domain.setPassword(payload.Password)
 	if passwordError != nil {
 		return nil, passwordError
@@ -64,5 +65,6 @@ func (domain *Domain) Register(payload RegisterPayload) (*User, error) {
 }
 
 func (domain *Domain) setPassword(password string) (*string, error) {
-	return nil, nil
+	passwordHash := "passwordHash"
+	return &passwordHash, nil
 }
