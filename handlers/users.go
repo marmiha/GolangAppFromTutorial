@@ -12,9 +12,10 @@ func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request)
 
 	// Call the validate payload.
 	next := validatePayload(func(writer http.ResponseWriter, request *http.Request) {
-		// If successful then this will be executed.
+		// If successful then this will be executed with next.ServeHTTP().
 		fmt.Println(payload)
 	}, &payload)
 
+	// Serve the returned
 	next.ServeHTTP(writer, request)
 }

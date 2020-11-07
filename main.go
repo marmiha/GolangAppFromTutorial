@@ -18,13 +18,15 @@ func main() {
 	appEnvironment := os.Getenv("APP_ENV")
 
 	if appEnvironment != "production" {
-		// Load the environment variables from .env file.
+		// Load the environment variables from .env file if this is not a production
+		// application environment.
 		godotenv.Load()
 	}
 
 	// Required environment variables.
 	postgresUser := os.Getenv("PSQL_USER")
 	postgresPassword := os.Getenv("PSQL_PASSWORD")
+	postgresAddress := os.Getenv("PSQL_ADDRESS")
 	databaseName := os.Getenv("PSQL_DB_NAME")
 	port := os.Getenv("APP_PORT")
 
@@ -36,7 +38,9 @@ func main() {
 	DB := postgres.New(&pg.Options{
 		User:     postgresUser,
 		Password: postgresPassword,
+		Addr:     postgresAddress,
 		Database: databaseName,
+		PoolSize: 20,
 	})
 
 	// After the main function returns, this will be called.
