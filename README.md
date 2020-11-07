@@ -18,19 +18,19 @@ stay the same.
 
 Each of the following packages can be found in the folder with the same name as the package.
 
-##### `package domain`
+#### `package domain`
 Contains the business logic of the application and is used by API endpoints. This is where we defined custom 
 business logic errors and the interfaces `type <Model>Repository interface {}` where model stands for the name of the 
 corresponding database model. These are then implemented in the database logic. All functions return Golang errors, which
 are then properly interpreted in the API endpoints `package handlers`. This is where we also define our payload structs
 which are used by our API endpoints to pass data.
 
-##### `package postgres`
+#### `package postgres`
 
 Contains implementations of the business logic interfaces and the database connection specific setup functions. Mostly 
 code for our CRUD operations.
 
-##### `package handlers`
+#### `package handlers`
 
 Contains our `REST` API endpoints implementation. These accept data over HTTP and respond accordingly to the data validation
 or business errors that occur with the right status codes and payload values.
