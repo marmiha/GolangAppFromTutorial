@@ -3,6 +3,7 @@ package domain
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // This is the payload we will get when a user wants to register.
@@ -41,9 +42,8 @@ func (domain *Domain) Register(payload RegisterPayload) (*User, error) {
 		return nil, ErrUserWithUsernameAlreadyExists
 	}
 
-	// Getting the password.
-
-	passwordHash, passwordError := domain.setPassword(payload.Password)
+	// Getting the password hash.
+	passwordHash, passwordError := hashPassword(payload.Password)
 	if passwordError != nil {
 		return nil, passwordError
 	}
@@ -64,7 +64,17 @@ func (domain *Domain) Register(payload RegisterPayload) (*User, error) {
 	return user, nil
 }
 
-func (domain *Domain) setPassword(password string) (*string, error) {
-	passwordHash := "passwordHash"
-	return &passwordHash, nil
+// Function for hashing passwords.
+func hashPassword(password string) (*string, error) {
+	bytePassword := []byte(password)
+	passwordHash, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+
+	if err != nil {
+		return nil, err
+	}
+
+	password = string(passwordHash)
+	return &password, nil
 }
+
+

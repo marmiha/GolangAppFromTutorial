@@ -7,13 +7,23 @@ import "time"
 type User struct {
 	// tableName is an optional field that specifies custom table name and alias.
 	// By default go-pg generates table name and alias from struct name.
-	tableName struct{} `pg:"user, alias:user"` // Default values would be the same.
+	tableName struct{} `pg:"\"user\",alias:u"`// Default values would be the same.
 
 	ID       int64  `json:"id" pg:"id,pk"`
-	Username string `json:"username" pg:"username"`
-	Email    string `json:"email" pg:"email"`
-	Password string `json:"-" pg:"password"`
+	Username string `json:"username" pg:",unique"`
+	Email    string `json:"email" pg:",unique"`
+	Password string `json:"-" pg:""`
 
-	CreatedAt time.Time `json:"created_at" pg:"created_at,default:now()"`
-	UpdatedAt time.Time `json:"updated_at" pg:"updated_at.default:now()"`
+	CreatedAt time.Time `json:"created_at" pg:"default:now()"`
+	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
+}
+
+// Function for setting the user password.
+func (user *User) setPassword(password string) error{
+	hashedPassword, err := hashPassword(password)
+	if err != nil {
+		return err
+	}
+	user.Password = *hashedPassword
+	return nil
 }

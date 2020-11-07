@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -64,9 +64,11 @@ func main() {
 		DB: domainDB,
 	}
 
+
 	// Create our database schema with this options.
 	options := orm.CreateTableOptions{
 		Temp: true,
+		IfNotExists: true,
 	}
 	err := postgres.CreateSchema(DB, &options)
 	if err != nil {
