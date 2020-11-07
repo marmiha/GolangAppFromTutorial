@@ -1,7 +1,10 @@
 ## GolangAppFromTutorial
 
 ### Summary
-This app is made by following the tutorial of youtube channel [EQuimper](https://www.youtube.com/channel/UC7R7bcH9-KEBDiGNP1mZnmw) for purpose of learning Go language. The tutorial playlist can be found on [this](https://www.youtube.com/watch?v=Uuy9J33iG0E&list=PLzQWIQOqeUSPFPVfticl-CsmUv82Gb5W-&index=1) link. Albeit I have followed the tutorial I've tried to implement a few quirks of my own, just to experiment with the unfamiliar yet programming language.
+This app was made by following the tutorial of youtube channel [EQuimper](https://www.youtube.com/channel/UC7R7bcH9-KEBDiGNP1mZnmw) 
+for purpose of learning Go language. The tutorial playlist can be found on [this](https://www.youtube.com/watch?v=Uuy9J33iG0E&list=PLzQWIQOqeUSPFPVfticl-CsmUv82Gb5W-&index=1) 
+link. Albeit I have followed the tutorial I've tried to implement a few quirks of my own, just to experiment with the 
+yet unfamiliar programming language.
 
 #### Project structure
 
@@ -22,11 +25,12 @@ which are used by our API endpoints to pass data.
 
 ##### `package postgres` resides in _.\postgres_
 
-Contains implementations of the business logic interfaces and the database connection specific setup functions. Mostly code for our
-CRUD operations.
+Contains implementations of the business logic interfaces and the database connection specific setup functions. Mostly 
+code for our CRUD operations.
 
 ##### `package handlers` resides in _.\handlers_
 
 Contains our `REST` API endpoints implementation. These accept data over HTTP and respond accordingly to the data validation
 or business errors that occur with the right status codes and payload values.
                                                                                  
+=======
