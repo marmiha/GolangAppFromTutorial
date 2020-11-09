@@ -6,8 +6,8 @@ import (
 )
 
 type authenticationResponse struct {
-	User  *domain.User     `json:"user"`
-	Token *domain.JWTToken `json:"token"`
+	User  *domain.User `json:"user"`
+	Token string       `json:"token"`
 }
 
 func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request) {
@@ -34,8 +34,8 @@ func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request)
 
 		// Fill our response struct with the user and the token.
 		responseBody := authenticationResponse{
-			User: user,
-			Token: token,
+			User:  user,
+			Token: *token,
 		}
 
 		// Return the newly created object.

@@ -23,7 +23,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
 }
 
-func (user *User) GenerateToken() (*JWTToken, error) {
+func (user *User) GenerateToken() (*string, error) {
 	// The tokens will expire in one day. Unix function converts the
 	// date to the seconds passed so int64.
 	expiresAt := time.Now().Add(time.Hour * 24)
@@ -40,21 +40,15 @@ func (user *User) GenerateToken() (*JWTToken, error) {
 		},
 	}
 
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Sign the token with the JWT_SECRET environment variable.
-	signedString, err := jwtToken.SignedString([]byte(os.Getenv("JTW_SECRET")))
+	signedString, err := token.SignedString([]byte(os.Getenv("JTW_SECRET")))
 
 	if err != nil {
 		return nil, err
 	}
 
-	// Make the token.
-	token := JWTToken{
-		AccessToken: signedString,
-		ExpiresAt:   expiresAt,
-	}
-
-	return &token, nil
+	return &signedString, nil
 }
 
 // Function for setting the user password.

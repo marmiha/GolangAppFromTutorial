@@ -5,7 +5,6 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 // Our custom claims for the JWT token field.
@@ -13,11 +12,6 @@ type JWTTokenClaims struct {
 	UserId         int64  `json:"user_id"`
 	Username       string `json:"username"`
 	StandardClaims jwt.StandardClaims
-}
-
-type JWTToken struct {
-	AccessToken string    `json:"access_token"`
-	ExpiresAt   time.Time `json:"expires_at"`
 }
 
 // This will always return valid for now. In the future you could
