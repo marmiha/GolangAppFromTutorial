@@ -5,6 +5,11 @@ import (
 	"todo/domain"
 )
 
+type authenticationResponse struct {
+	User  *domain.User     `json:"user"`
+	Token *domain.JWTToken `json:"token"`
+}
+
 func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request) {
 	// This is the payload that we need.
 	var payload domain.RegisterPayload
@@ -20,8 +25,21 @@ func (s *Server) registerUser(writer http.ResponseWriter, request *http.Request)
 			return
 		}
 
+		// Generate jwt token.
+		token, err := user.GenerateToken()
+		if err != nil {
+			badRequestResponse(writer, err)
+			return
+		}
+
+		// Fill our response struct with the user and the token.
+		responseBody := authenticationResponse{
+			User: user,
+			Token: token,
+		}
+
 		// Return the newly created object.
-		jsonResponse(writer, user, http.StatusCreated)
+		jsonResponse(writer, responseBody, http.StatusCreated)
 	}, &payload)
 
 	// Serve the returned

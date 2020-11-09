@@ -1,10 +1,30 @@
 package domain
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
+
+// Our custom claims for the JWT token field.
+type JWTTokenClaims struct {
+	UserId         int64  `json:"user_id"`
+	Username       string `json:"username"`
+	StandardClaims jwt.StandardClaims
+}
+
+type JWTToken struct {
+	AccessToken string    `json:"access_token"`
+	ExpiresAt   time.Time `json:"expires_at"`
+}
+
+// This will always return valid for now. In the future you could
+// validate the claims before signing them.
+func (J JWTTokenClaims) Valid() error {
+	return nil
+}
 
 // This is the payload we will get when a user wants to register.
 // On the right hand side we have the json attribute names.
@@ -76,5 +96,3 @@ func hashPassword(password string) (*string, error) {
 	password = string(passwordHash)
 	return &password, nil
 }
-
-
