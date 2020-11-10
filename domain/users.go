@@ -15,7 +15,7 @@ type User struct {
 	// By default go-pg generates table name and alias from struct name.
 	tableName struct{} `pg:"\"user\",alias:u"` // Default values would be the same.
 
-	ID       int64  `json:"id" pg:"id,pk"`
+	Id       int64  `json:"id" pg:"id,pk"`
 	Username string `json:"username" pg:",unique"`
 	Email    string `json:"email" pg:",unique"`
 	Password string `json:"-" pg:""`
@@ -27,14 +27,14 @@ type User struct {
 func (user *User) GenerateToken() (*string, error) {
 	// The tokens will expire in one day. Unix function converts the
 	// date to the seconds passed so int64.
-	expiresAt := time.Now().Add(time.Minute * 1)
+	expiresAt := time.Now().Add(time.Hour * 10)
 
 	// Populate the claims.
 	claims := JWTTokenClaims{
-		UserId:   user.ID,
+		UserId:   user.Id,
 		Username: user.Username,
 		StandardClaims: jwt.StandardClaims{
-			Id:        strconv.FormatInt(user.ID, 10),
+			Id:        strconv.FormatInt(user.Id, 10),
 			Issuer:    "TodoApp",
 			ExpiresAt: expiresAt.Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -42,7 +42,7 @@ func (user *User) GenerateToken() (*string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// Sign the token with the JWT_SECRET environment variable.
+	// Sign the token with the JWT_KEY environment variable.
 	key, _ := base64.URLEncoding.DecodeString(os.Getenv("JWT_KEY"))
 	signedString, err := token.SignedString(key)
 
@@ -61,6 +61,16 @@ func (user *User) setPassword(password string) error {
 	}
 	user.Password = *hashedPassword
 	return nil
+}
+
+// Used for getting the user with id from database. We use this for our inserting the user
+// in our HTTP request context.
+func (domain *Domain) GetUserById(id int64) (*User, error) {
+	user, err := domain.DB.UserRepository.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 

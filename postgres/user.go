@@ -55,6 +55,20 @@ func (u *UserRepository) GetByUsername(username string) (*domain.User, error) {
 	return user, nil
 }
 
+func (u *UserRepository) GetById(id int64) (*domain.User, error) {
+	user := new(domain.User)
+	err := u.DB.Model(user).Where("id = ?", id).First()
+
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (u *UserRepository) Create(user *domain.User) (*domain.User, error) {
 	// Insert user data in the database, returning back all the data.
 	// Because user is of type *domain.User (a pointer) we don't need to reassign the

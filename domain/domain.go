@@ -4,6 +4,7 @@ package domain
 // implemented in the handlers package, this way we decouple the business logic from
 // database implementations with specifying the arguments and return types.
 type UserRepository interface {
+	GetById(id int64) (*User, error)
 	GetByEmail(email string) (*User, error)
 	GetByUsername(username string) (*User, error)
 	Create(user *User) (*User, error)

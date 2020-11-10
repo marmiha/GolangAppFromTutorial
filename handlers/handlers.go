@@ -92,7 +92,7 @@ func unauthorizedResponse(writer http.ResponseWriter, error error) {
 	response := map[string]string {
 		"error": error.Error(),
 	}
-	jsonResponse(writer, response, http.StatusInternalServerError)
+	jsonResponse(writer, response, http.StatusUnauthorized)
 }
 
 // Universal payload tester for Http endpoints. Throws validation errors or decoding errors.

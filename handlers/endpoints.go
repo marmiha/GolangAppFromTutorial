@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"net/http"
+	"todo/domain"
 )
 
 
@@ -14,9 +15,10 @@ func (s *Server) setupEndpoints(r *chi.Mux) {
 			r.Post("/register", s.registerUser)
 		})
 		r.Route("/test", func(r chi.Router) {
-			r.Use(Authenticator)
+			r.Use(s.Authenticator)
 			r.Get("/protected", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte(fmt.Sprintf("protected area. hi")))
+				user := r.Context().Value(contextUserKey).(*domain.User)
+				_, _ = w.Write([]byte(fmt.Sprintf("Welcome %v!\n", user.Username)))
 			})
 		})
 	})
