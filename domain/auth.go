@@ -11,7 +11,7 @@ import (
 type JWTTokenClaims struct {
 	UserId         int64  `json:"user_id"`
 	Username       string `json:"username"`
-	StandardClaims jwt.StandardClaims
+	StandardClaims jwt.StandardClaims `json:"standard_claims"`
 }
 
 // This will always return valid for now. In the future you could

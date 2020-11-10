@@ -75,6 +75,26 @@ func badRequestResponse(writer http.ResponseWriter, error error) {
 	jsonResponse(writer, response, http.StatusBadRequest)
 }
 
+// For better code readability as we will use this a lot.
+func internalServerErrorResponse(writer http.ResponseWriter, error error) {
+	// Our response, what we reply back. Using the map[string]string we can
+	// define json properties and their values.
+	response := map[string]string {
+		"error": error.Error(),
+	}
+	jsonResponse(writer, response, http.StatusInternalServerError)
+}
+
+// For better code readability as we will use this a lot.
+func unauthorizedResponse(writer http.ResponseWriter, error error) {
+	// Our response, what we reply back. Using the map[string]string we can
+	// define json properties and their values.
+	response := map[string]string {
+		"error": error.Error(),
+	}
+	jsonResponse(writer, response, http.StatusInternalServerError)
+}
+
 // Universal payload tester for Http endpoints. Throws validation errors or decoding errors.
 func validatePayload(next http.HandlerFunc, payload validation.Validatable) http.HandlerFunc{
 	return func(writer http.ResponseWriter, request *http.Request) {
