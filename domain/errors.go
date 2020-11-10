@@ -11,9 +11,11 @@ var (
 	ErrUserWithEmailAlreadyExists    = errors.New("user with specified email already exists")
 	ErrUserWithUsernameAlreadyExists = errors.New("user with specified username already exist")
 	ErrNoResult                      = errors.New("no result")
+	ErrInvalidLoginCredentials       = errors.New("invalid login credentials")
 )
 
 // These errors are used for go-ozzo validation in our business logic, mostly for our payloads.
 var (
-	ErrPasswordsDoNotMatch = validation.NewError("validation_key_passwords_do_not_match", "passwords don't match")
+	ErrUsernameOrEmailRequired = validation.NewError("validation_key_username_or_email_required", "username or email is required")
+	ErrPasswordsDoNotMatch     = validation.NewError("validation_key_passwords_do_not_match", "passwords don't match")
 )

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
@@ -9,8 +10,8 @@ import (
 
 // Our custom claims for the JWT token field.
 type JWTTokenClaims struct {
-	UserId         int64  `json:"user_id"`
-	Username       string `json:"username"`
+	UserId         int64              `json:"user_id"`
+	Username       string             `json:"username"`
 	StandardClaims jwt.StandardClaims `json:"standard_claims"`
 }
 
@@ -39,6 +40,53 @@ func (rp RegisterPayload) Validate() error {
 	)
 }
 
+// This will be used for logging the user in.
+type LoginPayload struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// Validation for our LoginPayload
+func (lp LoginPayload) Validate() error {
+	return validation.ValidateStruct(&lp,
+		validation.Field(&lp.Email, validation.When(lp.Username == "", validation.Required.ErrorObject(ErrUsernameOrEmailRequired), validation.NotNil, is.Email)),
+		validation.Field(&lp.Username, validation.Length(3, 15)),
+		validation.Field(&lp.Password, validation.Required, validation.NotNil, validation.Length(5, 50)),
+	)
+}
+
+func (domain *Domain) Login(payload LoginPayload) (*User, error) {
+	var user *User
+	var err error
+
+	// Get user by email.
+	email := payload.Email
+	if len(email) > 0 {
+		user, err = domain.DB.UserRepository.GetByEmail(email)
+		if err != nil {
+			return nil, ErrInvalidLoginCredentials
+		}
+	}
+
+	// Get user by username.
+	if user == nil {
+		user, err = domain.DB.UserRepository.GetByUsername(payload.Username)
+		if err != nil {
+			return nil, ErrInvalidLoginCredentials
+		}
+	}
+
+	err = user.CheckPassword(payload.Password)
+	// Invalid password.
+	if err != nil {
+		fmt.Printf("Invalid password")
+		return nil, ErrInvalidLoginCredentials
+	}
+
+	// Correct password.
+	return user, nil
+}
 
 // Business logic for registration
 func (domain *Domain) Register(payload RegisterPayload) (*User, error) {

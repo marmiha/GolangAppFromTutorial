@@ -15,6 +15,7 @@ type Server struct {
 	Domain *domain.Domain
 }
 
+
 func setupMiddleWare(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)

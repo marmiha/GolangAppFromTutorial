@@ -32,7 +32,7 @@ func ParseToken(r *http.Request, tokenClaims *domain.JWTTokenClaims) (*jwt.Token
 	return token, err
 }
 
-func (s *Server) Authenticator(next http.Handler) http.Handler {
+func (s *Server) WithUserAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// This is where we check for our token and save it inside our context.
 		var tokenClaims domain.JWTTokenClaims

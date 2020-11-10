@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 	"os"
 	"strconv"
 	"time"
@@ -52,8 +53,13 @@ func (user *User) GenerateToken() (*string, error) {
 	return &signedString, nil
 }
 
+func (user *User) CheckPassword(password string) error {
+	bytePassword, byteHashedPassword := []byte(password), []byte(user.Password)
+	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
+}
+
 // Function for setting the user password.
-func (user *User) setPassword(password string) error {
+func (user *User) SetPassword(password string) error {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
 		return err
