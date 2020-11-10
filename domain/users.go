@@ -27,7 +27,7 @@ type User struct {
 func (user *User) GenerateToken() (*string, error) {
 	// The tokens will expire in one day. Unix function converts the
 	// date to the seconds passed so int64.
-	expiresAt := time.Now().Add(time.Hour * 24)
+	expiresAt := time.Now().Add(time.Minute * 1)
 
 	// Populate the claims.
 	claims := JWTTokenClaims{

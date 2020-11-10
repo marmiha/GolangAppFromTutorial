@@ -17,7 +17,7 @@ type JWTTokenClaims struct {
 // This will always return valid for now. In the future you could
 // validate the claims before signing them.
 func (J JWTTokenClaims) Valid() error {
-	return nil
+	return J.StandardClaims.Valid()
 }
 
 // This is the payload we will get when a user wants to register.

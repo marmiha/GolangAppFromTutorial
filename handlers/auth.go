@@ -25,7 +25,7 @@ var (
 func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// This is where we check for our token and save it inside our context.
-		tokenClaims := domain.JWTTokenClaims{}
+		var tokenClaims domain.JWTTokenClaims
 		token, err := jwtRequest.ParseFromRequest(r, &AuthenticationHeaderExtractorFilter, func(token *jwt.Token) (interface{}, error) {
 			key, _ := base64.URLEncoding.DecodeString(os.Getenv("JWT_KEY"))
 			return key, nil
@@ -35,6 +35,10 @@ func Authenticator(next http.Handler) http.Handler {
 		if err != nil {
 			internalServerErrorResponse(w, err)
 			return
+		}
+
+		if err := tokenClaims.Valid(); err != nil {
+			unauthorizedResponse(w, err)
 		}
 
 		fmt.Printf("token: %v", token)
