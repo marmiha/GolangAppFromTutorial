@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	jwtRequest "github.com/dgrijalva/jwt-go/request"
@@ -15,9 +16,8 @@ var (
 	AuthenticationHeaderExtractorFilter = jwtRequest.PostExtractionFilter{
 		Extractor: jwtRequest.HeaderExtractor{"Authorization"},
 		Filter: func(s string) (string, error) {
-			s = strings.TrimPrefix(s, "Bearer ")
-			fmt.Printf(s)
-			return s, nil
+			tokenString := strings.TrimPrefix(s, "Bearer ")
+			return tokenString, nil
 		},
 	}
 )
@@ -27,8 +27,8 @@ func Authenticator(next http.Handler) http.Handler {
 		// This is where we check for our token and save it inside our context.
 		tokenClaims := domain.JWTTokenClaims{}
 		token, err := jwtRequest.ParseFromRequest(r, &AuthenticationHeaderExtractorFilter, func(token *jwt.Token) (interface{}, error) {
-			pass := []byte(os.Getenv("JWT_SECRET"))
-			return pass, nil
+			key, _ := base64.URLEncoding.DecodeString(os.Getenv("JWT_KEY"))
+			return key, nil
 		}, jwtRequest.WithClaims(&tokenClaims))
 
 

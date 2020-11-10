@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"encoding/base64"
 	"github.com/dgrijalva/jwt-go"
 	"os"
 	"strconv"
@@ -42,7 +43,8 @@ func (user *User) GenerateToken() (*string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Sign the token with the JWT_SECRET environment variable.
-	signedString, err := token.SignedString([]byte(os.Getenv("w9z$C&F)J@NcRfUjWnZr4u7x!A%D*G-K")))
+	key, _ := base64.URLEncoding.DecodeString(os.Getenv("JWT_KEY"))
+	signedString, err := token.SignedString(key)
 
 	if err != nil {
 		return nil, err
