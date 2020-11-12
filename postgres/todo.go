@@ -22,7 +22,7 @@ func (t TodoRepository) Create(todo *domain.Todo) (*domain.Todo, error) {
 }
 
 func (t TodoRepository) GetTodosOfUser(user *domain.User) ([]*domain.Todo, error) {
-	var todos []*domain.Todo
+	var todos = make([]*domain.Todo, 0)
 	err := t.DB.Model(&todos).Where("user_id = ?", user.Id).Select()
 	if err != nil {
 		return nil, err

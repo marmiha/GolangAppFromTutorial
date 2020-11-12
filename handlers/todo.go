@@ -6,7 +6,7 @@ import (
 )
 
 type getTodosResponse struct {
-	Todos *[]*domain.Todo `json:"todos"`
+	Todos []*domain.Todo `json:"todos"`
 }
 
 type createTodoResponse struct {
@@ -50,7 +50,7 @@ func (s *Server) getTodos(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	responseBody := getTodosResponse{
-		Todos: &todos,
+		Todos: todos,
 	}
 
 	jsonResponse(writer, responseBody, http.StatusOK)
