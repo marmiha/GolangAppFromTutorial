@@ -10,9 +10,14 @@ type UserRepository interface {
 	Create(user *User) (*User, error)
 }
 
+type TodoRepository interface {
+	Create(todo *Todo) (*Todo, error)
+}
+
 // DB struct encapsulates all the interfaces handling the database gateway interfaces.
 type DB struct {
 	UserRepository UserRepository
+	TodoRepository TodoRepository
 }
 
 // Struct used for common variables across the business logic (domain package).

@@ -58,6 +58,7 @@ func main() {
 	// defined interface of domain package.
 	domainDB := domain.DB{
 		UserRepository: postgres.NewUserRepository(DB),
+		TodoRepository: postgres.NewTodoRepository(DB),
 	}
 	// Now the domain includes everything we need for our REST endpoints.
 	domain := domain.Domain{
@@ -67,7 +68,6 @@ func main() {
 
 	// Create our database schema with this options.
 	options := orm.CreateTableOptions{
-		Temp: true,
 		IfNotExists: true,
 	}
 	err := postgres.CreateSchema(DB, &options)
