@@ -20,6 +20,8 @@ type User struct {
 	Email    string `json:"email" pg:",unique"`
 	Password string `json:"-" pg:""`
 
+	Todos []Todo `json:"todos" pg:"rel:has-many"`
+
 	CreatedAt time.Time `json:"created_at" pg:"default:now()"`
 	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
 }

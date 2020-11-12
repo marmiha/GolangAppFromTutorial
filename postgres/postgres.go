@@ -15,6 +15,7 @@ func CreateSchema(db *pg.DB, options *orm.CreateTableOptions) error {
 	// Our database models/structs.
 	models := []interface{} {
 		(*domain.User)(nil),	// Add multiple in the list.
+		(*domain.Todo)(nil),
 	}
 
 	// Create each of the models.
