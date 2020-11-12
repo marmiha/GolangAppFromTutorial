@@ -12,6 +12,7 @@ type UserRepository interface {
 
 type TodoRepository interface {
 	Create(todo *Todo) (*Todo, error)
+	GetTodosOfUser(user *User) ([]*Todo, error)
 }
 
 // DB struct encapsulates all the interfaces handling the database gateway interfaces.

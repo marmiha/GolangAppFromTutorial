@@ -46,3 +46,13 @@ func (d *Domain) CreateTodo(payload CreateTodoPayload, user *User) (*Todo, error
 
 	return todo, nil
 }
+
+func (d *Domain) GetTodosOfUser(user *User) ([]*Todo, error) {
+	todos, err := d.DB.TodoRepository.GetTodosOfUser(user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return todos, nil
+}

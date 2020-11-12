@@ -65,7 +65,6 @@ func (u *UserRepository) GetById(id int64) (*domain.User, error) {
 		}
 		return nil, err
 	}
-
 	return user, nil
 }
 
