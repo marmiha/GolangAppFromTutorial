@@ -19,6 +19,12 @@ func (s *Server) setupEndpoints(r *chi.Mux) {
 			r.Use(s.WithUserAuthentication)
 			r.Post("/", s.createTodo)
 			r.Get("/", s.getTodos)
+
+			r.Route("/{todo_id}", func(r chi.Router) {
+				r.Use(s.WithTodo)
+				r.Use(s.WithOwner(contextTodoKey))
+				r.Delete("/", s.deleteTodo)
+			})
 		})
 
 		// Functionality testing routes.

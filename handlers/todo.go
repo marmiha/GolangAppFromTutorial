@@ -13,6 +13,16 @@ type createTodoResponse struct {
 	Todo *domain.Todo `json:"todo"`
 }
 
+func (s *Server) deleteTodo(writer http.ResponseWriter, request *http.Request) {
+	todo := s.todoFromContext(request)
+	err := s.Domain.DB.TodoRepository.Delete(todo)
+	if err != nil {
+		badRequestResponse(writer, err)
+		return
+	}
+	successfulDeleteResponse(writer)
+}
+
 func (s *Server) createTodo(writer http.ResponseWriter, request *http.Request) {
 	var payload domain.CreateTodoPayload
 

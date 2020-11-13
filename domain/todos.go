@@ -19,6 +19,10 @@ type Todo struct {
 	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
 }
 
+func (t Todo) IsOwner(user *User) bool {
+	return t.UserId == user.Id
+}
+
 type CreateTodoPayload struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -55,4 +59,20 @@ func (d *Domain) GetTodosOfUser(user *User) ([]*Todo, error) {
 	}
 
 	return todos, nil
+}
+
+func (d *Domain) GetTodoById(id int64) (*Todo, error) {
+	todo, err := d.DB.TodoRepository.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+	return todo, nil
+}
+
+func (d *Domain) DeleteTodo(todo *Todo) error {
+	err := d.DB.TodoRepository.Delete(todo)
+	if err != nil {
+		return err
+	}
+	return nil
 }

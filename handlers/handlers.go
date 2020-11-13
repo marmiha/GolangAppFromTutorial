@@ -75,6 +75,14 @@ func badRequestResponse(writer http.ResponseWriter, error error) {
 	jsonResponse(writer, response, http.StatusBadRequest)
 }
 
+func successfulDeleteResponse(writer http.ResponseWriter) {
+	// Our response, what we reply back. Using the map[string]string we can
+	// define json properties and their values.
+	response := map[string]string {}
+	jsonResponse(writer, response, http.StatusNoContent)
+}
+
+
 // For better code readability as we will use this a lot.
 func internalServerErrorResponse(writer http.ResponseWriter, error error) {
 	// Our response, what we reply back. Using the map[string]string we can
@@ -93,6 +101,20 @@ func unauthorizedResponse(writer http.ResponseWriter, error error) {
 		"error": error.Error(),
 	}
 	jsonResponse(writer, response, http.StatusUnauthorized)
+}
+
+func forbiddenResponse(writer http.ResponseWriter) {
+	response := map[string]string {
+		"error": "Forbidden",
+	}
+	jsonResponse(writer, response, http.StatusForbidden)
+}
+
+func notFoundResponse(writer http.ResponseWriter, error error) {
+	response := map[string]string {
+		"error": error.Error(),
+	}
+	jsonResponse(writer, response, http.StatusNotFound)
 }
 
 // Universal payload tester for Http endpoints. Throws validation errors or decoding errors.

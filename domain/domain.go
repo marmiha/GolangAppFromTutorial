@@ -11,8 +11,15 @@ type UserRepository interface {
 }
 
 type TodoRepository interface {
+	GetById(id int64) (*Todo, error)
 	Create(todo *Todo) (*Todo, error)
+	Update(todo *Todo) (*Todo, error)
+	Delete(todo *Todo) error
 	GetTodosOfUser(user *User) ([]*Todo, error)
+}
+
+type HaveOwner interface {
+	IsOwner(user *User) bool
 }
 
 // DB struct encapsulates all the interfaces handling the database gateway interfaces.
