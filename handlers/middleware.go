@@ -30,6 +30,10 @@ func (s *Server) WithUserAuthentication(next http.Handler) http.Handler {
 		// Get the user from the database and insert it into the context.
 		user, err := s.Domain.GetUserById(tokenClaims.UserId)
 		if err != nil {
+			if err == domain.ErrNoResult {
+				badRequestResponse(w, domain.ErrUserNotFound)
+				return
+			}
 			internalServerErrorResponse(w, err)
 			return
 		}

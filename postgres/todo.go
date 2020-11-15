@@ -10,6 +10,14 @@ type TodoRepository struct {
 	DB *pg.DB
 }
 
+func (t TodoRepository) Patch(todo *domain.Todo) error {
+	_, err := t.DB.Model(todo).WherePK().UpdateNotZero(todo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (t TodoRepository) Delete(todo *domain.Todo) error {
 	_, err := t.DB.Model(todo).WherePK().Delete()
 	if err != nil {
@@ -37,7 +45,7 @@ func (t TodoRepository) GetById(id int64) (*domain.Todo, error) {
 }
 
 func (t TodoRepository) Update(todo *domain.Todo) (*domain.Todo, error) {
-	_, err := t.DB.Model(todo).WherePK().Update()
+	_, err := t.DB.Model(todo).WherePK().Returning("*").UpdateNotZero()
 	if err != nil {
 		return nil, err
 	}

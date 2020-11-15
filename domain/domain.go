@@ -13,11 +13,12 @@ type UserRepository interface {
 type TodoRepository interface {
 	GetById(id int64) (*Todo, error)
 	Create(todo *Todo) (*Todo, error)
-	Update(todo *Todo) (*Todo, error)
 	Delete(todo *Todo) error
+	Patch(todo *Todo) error
 	GetTodosOfUser(user *User) ([]*Todo, error)
 }
 
+// Used for implementing on struct that have an owner.
 type HaveOwner interface {
 	IsOwner(user *User) bool
 }

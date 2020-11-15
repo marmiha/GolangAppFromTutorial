@@ -12,6 +12,7 @@ var (
 	ErrUserWithUsernameAlreadyExists = errors.New("user with specified username already exist")
 	ErrNoResult                      = errors.New("no result")
 	ErrInvalidLoginCredentials       = errors.New("invalid login credentials")
+	ErrUserNotFound					= errors.New("user not found")
 )
 
 // These errors are used for go-ozzo validation in our business logic, mostly for our payloads.

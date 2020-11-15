@@ -11,19 +11,16 @@ import (
 // User struct will be used for our postgres database. Right hand side we have our
 // json marshal definitions. If we write json:"-" that field won't be marshalled.
 type User struct {
+	Entities
 	// tableName is an optional field that specifies custom table name and alias.
 	// By default go-pg generates table name and alias from struct name.
 	tableName struct{} `pg:"users,alias:u"` // Default values would be the same.
 
-	Id       int64  `json:"id" pg:"id,pk"`
 	Username string `json:"username" pg:",unique"`
 	Email    string `json:"email" pg:",unique"`
 	Password string `json:"-" pg:""`
 
 	Todos []*Todo `json:"todos" pg:"rel:has-many"`
-
-	CreatedAt time.Time `json:"created_at" pg:"default:now()"`
-	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
 }
 
 func (user *User) GenerateToken() (*string, error) {

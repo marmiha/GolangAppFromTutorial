@@ -13,9 +13,36 @@ type createTodoResponse struct {
 	Todo *domain.Todo `json:"todo"`
 }
 
+type patchTodoResponse struct {
+	Todo *domain.Todo `json:"todo"`
+}
+
+func (s *Server) patchTodo(writer http.ResponseWriter, request *http.Request) {
+	var payload domain.PatchTodoPayload
+
+	next := validatePayload(func(writer http.ResponseWriter, request *http.Request) {
+
+		todo := s.todoFromContext(request)
+		err := s.Domain.PatchTodo(payload, todo)
+
+		if err != nil {
+			badRequestResponse(writer, err)
+			return
+		}
+
+		response := patchTodoResponse{
+			Todo: todo,
+		}
+		jsonResponse(writer, response, http.StatusOK)
+
+	}, &payload)
+
+	next.ServeHTTP(writer, request)
+}
+
 func (s *Server) deleteTodo(writer http.ResponseWriter, request *http.Request) {
 	todo := s.todoFromContext(request)
-	err := s.Domain.DB.TodoRepository.Delete(todo)
+	err := s.Domain.DeleteTodo(todo)
 	if err != nil {
 		badRequestResponse(writer, err)
 		return

@@ -2,21 +2,17 @@ package domain
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"time"
 )
 
 type Todo struct {
+	Entities
 	tableName struct{} `pg:"todos,alias:todo"` // Default values would be the same.
 
-	Id          int64  `json:"id" pg:"id,pk"`
 	Title       string `json:"title" pg:"title"`
 	Description string `json:"description" pg:"description"`
-	Completed   bool   `json:"completed" pg:"completed"`
+	Completed   bool   `json:"completed" pg:"completed,default:false"`
 
 	UserId int64 `json:"user_id" pg:"user_id"`
-
-	CreatedAt time.Time `json:"created_at" pg:"default:now()"`
-	UpdatedAt time.Time `json:"updated_at" pg:"default:now()"`
 }
 
 func (t Todo) IsOwner(user *User) bool {
@@ -35,12 +31,50 @@ func (c CreateTodoPayload) Validate() error {
 	)
 }
 
+type PatchTodoPayload struct {
+	// These are pointers so that we can detect if any of these were omitted or not.
+	// If these would not be pointers than Completed would default to false if omitted
+	// thus we would not know if the user specified this field to be patched or not.
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Completed   *bool   `json:"completed,omitempty"`
+}
+
+func (p PatchTodoPayload) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.Title, validation.Length(1, 30)),
+		validation.Field(&p.Description, validation.Length(0, 256)),
+	)
+}
+
+func (d *Domain) PatchTodo(payload PatchTodoPayload, todo *Todo) error {
+
+	if payload.Completed != nil {
+		todo.Completed = *payload.Completed
+	}
+
+	if payload.Description != nil {
+		todo.Description = *payload.Description
+	}
+
+	if payload.Title != nil {
+		todo.Title = *payload.Title
+	}
+
+	err := d.DB.TodoRepository.Patch(todo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (d *Domain) CreateTodo(payload CreateTodoPayload, user *User) (*Todo, error) {
-	data := &Todo {
-		Title: payload.Title,
+	data := &Todo{
+		Title:       payload.Title,
 		Description: payload.Description,
-		Completed: false,
-		UserId: user.Id,
+		Completed:   false,
+		UserId:      user.Id,
 	}
 
 	todo, err := d.DB.TodoRepository.Create(data)

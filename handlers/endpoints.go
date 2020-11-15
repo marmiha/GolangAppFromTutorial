@@ -1,10 +1,7 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/go-chi/chi"
-	"net/http"
-	"todo/domain"
 )
 
 func (s *Server) setupEndpoints(r *chi.Mux) {
@@ -24,15 +21,7 @@ func (s *Server) setupEndpoints(r *chi.Mux) {
 				r.Use(s.WithTodo)
 				r.Use(s.WithOwner(contextTodoKey))
 				r.Delete("/", s.deleteTodo)
-			})
-		})
-
-		// Functionality testing routes.
-		r.Route("/test", func(r chi.Router) {
-			r.Use(s.WithUserAuthentication)
-			r.Get("/protected", func(w http.ResponseWriter, r *http.Request) {
-				user := r.Context().Value(contextUserKey).(*domain.User)
-				_, _ = w.Write([]byte(fmt.Sprintf("Welcome %v!\n", user.Username)))
+				r.Patch("/", s.patchTodo)
 			})
 		})
 	})

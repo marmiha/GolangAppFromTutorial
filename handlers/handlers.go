@@ -117,6 +117,7 @@ func notFoundResponse(writer http.ResponseWriter, error error) {
 	jsonResponse(writer, response, http.StatusNotFound)
 }
 
+
 // Universal payload tester for Http endpoints. Throws validation errors or decoding errors.
 func validatePayload(next http.HandlerFunc, payload validation.Validatable) http.HandlerFunc{
 	return func(writer http.ResponseWriter, request *http.Request) {
